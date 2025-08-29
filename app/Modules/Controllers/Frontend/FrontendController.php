@@ -17,4 +17,12 @@ class FrontendController extends Controller
             ]
         ]);
     }
+    public function BookingsPage()
+    {
+        return Inertia::render('HomePage/BookingsPage', [
+            'event' => [
+                'title' => 'Bookings Page',
+            ]
+        ]);
+    }
 }

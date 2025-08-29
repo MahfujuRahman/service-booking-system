@@ -8,8 +8,11 @@ class GetAllData
 
     public static function execute()
     {
-        try {
 
+
+        try {
+            $authId = auth()->id();
+            $bookings = request()->input('bookings');
             $pageLimit = request()->input('limit') ?? 10;
             $orderByColumn = request()->input('sort_by_col') ?? 'id';
             $orderByType = request()->input('sort_type') ?? 'desc';
@@ -21,6 +24,9 @@ class GetAllData
             $with = ['user:id,first_name,last_name', 'service:id,name'];
 
             $condition = [];
+            if ($bookings) {
+                $condition = ['user_id' => $authId];
+            }
 
             $data = self::$model::query();
 

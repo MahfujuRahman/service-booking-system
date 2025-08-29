@@ -4,7 +4,7 @@ use App\Modules\Management\Booking\Controller\Controller;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::prefix('bookings')->group(function () {
+    Route::prefix('bookings')->middleware(['auth:api'])->group(function () {
         Route::get('', [Controller::class,'index']);
         Route::get('{slug}', [Controller::class,'show']);
         Route::post('store', [Controller::class,'store']);
