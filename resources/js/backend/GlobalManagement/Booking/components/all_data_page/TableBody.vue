@@ -8,7 +8,7 @@
     </td>
     <template v-for="(row_item, index) in setup.table_row_data" :key="index">
       <td v-if="row_item == 'id'">
-       {{ (current_page - 1) * per_page + dataindex + 1 }}
+        {{ (current_page - 1) * per_page + dataindex + 1 }}
       </td>
       <td v-else-if="row_item === 'image' || isImageFile(item[row_item])" class="text-wrap max-w-120">
         <a :href="item[row_item] || '/avatar.png'" data-fancybox="gallery" :data-caption="`Image ${dataindex + 1}`">
@@ -31,6 +31,12 @@
             {{ getFileName(item[row_item]) }}
           </a>
         </template>
+      </td>
+      <td v-else-if="row_item === 'user_id'" class="text-wrap max-w-120">
+        {{ item.user ? item.user.first_name + ' ' + item.user.last_name : item[row_item] }}
+      </td>
+      <td v-else-if="row_item === 'service_id'" class="text-wrap max-w-120">
+        {{ item.service ? item.service.name : item[row_item] }}
       </td>
       <td v-else class="text-wrap max-w-120">
         {{ trim_content(item[row_item], row_item) }}

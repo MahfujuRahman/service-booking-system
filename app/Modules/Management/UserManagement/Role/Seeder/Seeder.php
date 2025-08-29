@@ -23,7 +23,7 @@ class Seeder extends SeederClass
             'serial_no' => 1,
         ]);
         self::$model::create([
-            'name' => "admin",
+            'name' => "customer",
             'serial_no' => 2,
         ]);
     }

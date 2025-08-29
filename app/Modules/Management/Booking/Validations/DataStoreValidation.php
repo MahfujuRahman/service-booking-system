@@ -44,7 +44,7 @@ class DataStoreValidation extends FormRequest
         return [
             'user_id' => 'required | sometimes',
             'service_id' => 'required | sometimes',
-            'booking_date' => 'required | sometimes',
+            'booking_date' => 'required | sometimes | after_or_equal:today',
             'status' => ['sometimes', Rule::in(['active', 'inactive'])],
         ];
     }

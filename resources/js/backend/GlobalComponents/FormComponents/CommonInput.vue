@@ -24,14 +24,12 @@
           :name="name"
           :id="name"
           :value="value"
+          v-bind:min="min"
           @change="errorReset"
         />
       </div>
 
       <div v-if="type === 'textarea'" class="mt-1 mb-3">
-        <!-- <textarea class="form-control form-control-square" rows="10"  type="text" :name="name" :value="value"
-                @change="errorReset"></textarea> -->
-        <!-- <div :id="name"></div> -->
         <text-editor :name="name" />
       </div>
 
@@ -104,6 +102,10 @@ export default {
     data_list: {
       required: false,
       type: Array,
+    },
+    min: {
+      required: false,
+      type: [String, Number],
     },
     images_list: {
       required: false,

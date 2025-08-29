@@ -7,18 +7,17 @@
       <th class="text-center">:</th>
       <th class="text-trim">
         <template v-if="row_item === 'image'">
-          <a 
-            :href="item[row_item] || '/avatar.png'" 
-            data-fancybox="detail-gallery" 
-            :data-caption="`${row_item} - Detail View`"
-          >
-            <img
-              :src="item[row_item] || '/avatar.png'"
-              @error="handleImageError($event)"
-              style="width: 120px; height: 120px; object-fit: cover"
-              alt="image"
-            />
+          <a :href="item[row_item] || '/avatar.png'" data-fancybox="detail-gallery"
+            :data-caption="`${row_item} - Detail View`">
+            <img :src="item[row_item] || '/avatar.png'" @error="handleImageError($event)"
+              style="width: 120px; height: 120px; object-fit: cover" alt="image" />
           </a>
+        </template>
+        <template v-else-if="row_item === 'user_id'">
+          {{ item.user ? item.user.first_name + ' ' + item.user.last_name : item[row_item] }}
+        </template>
+        <template v-else-if="row_item === 'service_id'">
+          {{ item.service ? item.service.name : item[row_item] }}
         </template>
         <template v-else>
           {{ trim_content(item[row_item], row_item) }}
