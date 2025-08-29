@@ -18,15 +18,12 @@ class Seeder extends SeederClass
         $faker = Faker::create();
         self::$model::truncate();
 
-        for ($serviceId = 1; $serviceId <= 20; $serviceId++) {
-            $numBookings = rand(2, 5);
-            for ($i = 0; $i < $numBookings; $i++) {
-                self::$model::create([
-                    'user_id' => 2,
-                    'service_id' => $serviceId,
-                    'booking_date' => $faker->dateTimeBetween('tomorrow', '+1 year')->format('Y-m-d'),
-                ]);
-            }
+        for ($serviceId = 1; $serviceId <= 15; $serviceId++) {
+            self::$model::create([
+                'user_id' => 2,
+                'service_id' => $serviceId,
+                'booking_date' => $faker->dateTimeBetween('tomorrow', '+1 year')->format('Y-m-d'),
+            ]);
         }
     }
 }
