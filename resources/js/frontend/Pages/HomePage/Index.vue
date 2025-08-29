@@ -8,6 +8,11 @@
             <h1 class="display-4 font-weight-bold mb-3">Professional Services Marketplace</h1>
             <p class="lead mt-3 mb-4">Discover and book verified professionals for all your needs. Browse our comprehensive service catalog — booking requires a quick sign-in.</p>
           </div>
+          <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-outline-light btn-lg px-4 py-2" @click="goToLogin" style="border-radius: 25px; font-weight: 600; transition: all 0.3s ease;">
+              <i class="fas fa-sign-in-alt me-2"></i>Login
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -108,6 +113,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data: () => ({
     services: [],
@@ -120,6 +127,11 @@ export default {
     showLoginModal: false,
   }),
   created: async function () {
+    // Set authorization header if token exists
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
     await this.fetchServices();
   },
   methods: {
@@ -161,7 +173,7 @@ export default {
       if (q) {
         filtered = filtered.filter((s) => {
           if (!s) return false;
-          const title = (s.title || '').toString().toLowerCase();
+          const title = (s.name || '').toString().toLowerCase();
           const desc = (s.description || '').toString().toLowerCase();
           const price = (s.price || '').toString().toLowerCase();
           return title.includes(q) || desc.includes(q) || price.includes(q);
@@ -208,22 +220,70 @@ export default {
     },
     async bookService(service) {
       try {
-       
         const authResponse = await axios.get('/auth-check');
+        
         if (authResponse && authResponse.status === 200) {
-          this.$router.push({ name: 'CreateBooking', query: { service_id: service && service.id } });
+          const checkUser = await axios.get('/check_user');
+          
+          if (checkUser.data?.status === 'success' && checkUser.data?.data) {
+            try {
+              const bookingData = {
+                service_id: service.id,
+                user_id: checkUser.data.data.id,
+              };
+              
+              const bookingResponse = await axios.post('/bookings/store', bookingData);
+              
+              if (bookingResponse.data?.status === 'success') {
+                window.s_alert('Booking successfully!');
+              } else {
+                window.s_error('Failed to booking: ' + (bookingResponse.data?.message || 'Unknown error'));
+              }
+            } catch (bookingError) {
+              console.error('Booking creation failed:', bookingError);
+              const errorMessage = bookingError.response?.data?.message || 'Failed to book service';
+              window.s_error(errorMessage);
+            }
+          } else {
+            console.error('User data not found:', checkUser.data);
+            window.s_error('Unable to get user information for booking');
+          }
         } else {
           window.s_error('Please login to book a service');
         }
       } catch (err) {
-        // axios throws for 401/4xx/5xx — handle unauthenticated specifically
+        // Handle authentication errors
         if (err && err.response && err.response.status === 401) {
           window.s_error('Please login to book a service');
         } else {
           console.error('Auth check failed', err);
-          window.s_alert('Unable to verify authentication. Please try again.');
+          window.s_error('Unable to verify authentication. Please try again.');
         }
       }
+    },
+    goToLogin() {
+   
+      try {
+        if (this.$router && typeof this.$router.push === 'function') {
+          try {
+            this.$router.push({ name: 'Login' });
+            return;
+          } catch (e) {
+            try {
+              this.$router.push('/login');
+              return;
+            } catch (e2) {
+            }
+          }
+        } else {
+          console.log('Router not available');
+        }
+      } catch (e) {
+        console.log('Router error:', e.message);
+        // ignore and hard redirect below
+      }
+      // final fallback
+      window.location.href = '/login';
     },
     getStatusClass(service) {
       if (!service || !service.status) return 'badge-secondary';
@@ -251,6 +311,7 @@ export default {
   right: 0;
   bottom: 0;
   background: rgba(0,0,0,0.1);
+  pointer-events: none;
 }
 
 .hero .hero-card {
