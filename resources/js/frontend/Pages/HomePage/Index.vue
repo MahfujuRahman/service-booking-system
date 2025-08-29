@@ -113,7 +113,7 @@
                                         }})
                                     </button>
                                     <button v-else class="btn btn-primary btn-sm flex-fill"
-                                        @click="bookService(service)">
+                                        @click="openBookingModal(service)">
                                         <i class="fas fa-calendar-check me-1"></i>Book Now
                                     </button>
                                 </div>
@@ -145,6 +145,41 @@
                 </nav>
             </div>
         </section>
+
+        <!-- Booking Date Modal -->
+        <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookingModalLabel">Book Service</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div v-if="selectedService" >
+                            <h6 class="font-weight-bold">{{ selectedService.name }}</h6>
+                            <p class="text-muted small">{{ selectedService.description }}</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingDate" class="font-weight-bold">Select Booking Date:</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="bookingDate" 
+                                v-model="bookingDate" 
+                                :min="minDate"
+                                required>
+                            <small class="form-text text-muted">Please select today or a future date</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" @click="confirmBooking" :disabled="!bookingDate || bookingLoading">
+                            <span v-if="bookingLoading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                            {{ bookingLoading ? 'Booking...' : 'Confirm Booking' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -152,6 +187,12 @@
 import axios from 'axios';
 
 export default {
+    mounted() {
+        // Ensure jQuery is available for Bootstrap modals
+        if (typeof window.$ === 'undefined') {
+            console.warn('jQuery not found, modal may not work properly');
+        }
+    },
     data: () => ({
         services: [],
         loading: true,
@@ -164,8 +205,16 @@ export default {
         isAuthenticated: false,
         currentUser: null,
         userBookings: [],
+        selectedService: null,
+        bookingDate: '',
+        bookingLoading: false,
+        minDate: '',
     }),
     created: async function () {
+        // Set minimum date to today
+        const today = new Date();
+        this.minDate = today.toISOString().split('T')[0];
+        
         // Set authorization header if token exists
         const token = localStorage.getItem('admin_token');
         if (token) {
@@ -295,6 +344,82 @@ export default {
             const el = this.$refs.servicesSection;
             if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth' });
         },
+
+        openBookingModal(service) {
+            this.selectedService = service;
+            this.bookingDate = '';
+            // Show modal using Bootstrap's modal method
+            $('#bookingModal').modal('show');
+        },
+
+        async confirmBooking() {
+            if (!this.bookingDate) {
+                window.s_error('Please select a booking date');
+                return;
+            }
+
+            // Validate date is today or future
+            const selectedDate = new Date(this.bookingDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                window.s_error('Please select today or a future date');
+                return;
+            }
+
+            this.bookingLoading = true;
+
+            try {
+                const authResponse = await axios.get('/auth-check');
+
+                if (authResponse && authResponse.status === 200) {
+                    const checkUser = await axios.get('/check_user');
+
+                    if (checkUser.data?.status === 'success' && checkUser.data?.data) {
+                        try {
+                            const bookingData = {
+                                service_id: this.selectedService.id,
+                                user_id: checkUser.data.data.id,
+                                booking_date: this.bookingDate,
+                            };
+
+                            const bookingResponse = await axios.post('/bookings/store', bookingData);
+
+                            if (bookingResponse.data?.status === 'success') {
+                                window.s_alert('Booking confirmed for ' + this.bookingDate + '!');
+                                // Close modal
+                                $('#bookingModal').modal('hide');
+                                // Refresh user bookings to update UI
+                                await this.fetchUserBookings();
+                            } else {
+                                window.s_error('Failed to create booking: ' + (bookingResponse.data?.message || 'Unknown error'));
+                            }
+                        } catch (bookingError) {
+                            console.error('Booking creation failed:', bookingError);
+                            const errorMessage = bookingError.response?.data?.message || 'Failed to book service';
+                            window.s_error(errorMessage);
+                        }
+                    } else {
+                        console.error('User data not found:', checkUser.data);
+                        window.s_error('Unable to get user information for booking');
+                    }
+                } else {
+                    window.s_error('Please login to book a service');
+                }
+            } catch (err) {
+                // Handle authentication errors
+                if (err && err.response && err.response.status === 401) {
+                    window.s_error('Please login to book a service');
+                } else {
+                    console.error('Auth check failed', err);
+                    window.s_error('Unable to verify authentication. Please try again.');
+                }
+            } finally {
+                this.bookingLoading = false;
+            }
+        },
+
         async bookService(service) {
             try {
                 const authResponse = await axios.get('/auth-check');
