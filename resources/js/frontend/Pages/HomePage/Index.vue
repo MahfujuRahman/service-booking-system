@@ -1,5 +1,47 @@
 <template>
     <div class="landing-page">
+        <!-- Header -->
+        <header class="site-navbar navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+            <div class="container d-flex align-items-center justify-content-between">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <span class="brand-icon me-2"><i class="fas fa-tools"></i></span>
+                    <span class="brand-text">QTech Professional Services</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item me-2" v-if="!isAuthenticated">
+                            <button class="btn btn-outline-light nav-btn" @click="goToLogin">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </button>
+                        </li>
+                        <li class="nav-item me-2" v-if="!isAuthenticated">
+                            <button class="btn btn-light nav-btn register-btn" @click="goToRegister">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </button>
+                        </li>
+
+                        <li class="nav-item me-2" v-if="isAuthenticated">
+                            <button class="btn btn-outline-light nav-btn" @click="goToBookings">
+                                <i class="fas fa-calendar-alt me-1"></i>All Bookings
+                            </button>
+                        </li>
+
+                        <li class="nav-item d-flex align-items-center" v-if="isAuthenticated">
+                            <button class="btn btn-outline-light nav-btn" @click="logout">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+
         <!-- Hero -->
         <section class="hero text-white d-flex align-items-center">
             <div class="container py-5">
@@ -10,18 +52,9 @@
                             our comprehensive service catalog — booking requires a quick sign-in.</p>
                     </div>
                     <div class="col-md-12 text-center">
-                        <button type="button" class="btn btn-outline-light btn-lg px-4 py-2" @click="goToLogin"
-                            v-if="!isAuthenticated"
-                            style="border-radius: 25px; font-weight: 600; transition: all 0.3s ease;">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </button>
-                        <div v-else class="text-center">
+                        <div  v-if="!isAuthenticated" class="text-center">
                             <h5 class="mb-2">Welcome back, {{ currentUser?.name || 'User' }}!</h5>
                             <p class="mb-0">Browse and book services below</p>
-                            <button type="button" class="btn btn-outline-light btn-lg px-4 py-2 mt-3" @click="logout"
-                                style="border-radius: 25px; font-weight: 600; transition: all 0.3s ease;">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -46,7 +79,7 @@
                             <div class="input-group-append">
                                 <button class="btn btn-primary rounded-0 px-4" @click="applyFilter"
                                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                                    <i class="fas fa-search mr-1"></i>Search
+                                    <i class="fas fa-search me-1"></i>Search
                                 </button>
                             </div>
                         </div>
@@ -489,6 +522,29 @@ export default {
             // final fallback
             window.location.href = '/login';
         },
+        goToRegister() {
+            try {
+                if (this.$router && typeof this.$router.push === 'function') {
+                    try {
+                        this.$router.push({ name: 'Register' });
+                        return;
+                    } catch (e) {
+                        try {
+                            this.$router.push('/register');
+                            return;
+                        } catch (e2) {
+                        }
+                    }
+                } else {
+                    console.log('Router not available');
+                }
+            } catch (e) {
+                console.log('Router error:', e.message);
+                // ignore and hard redirect below
+            }
+            // final fallback
+            window.location.href = '/register';
+        },
         async logout() {
             let con = await window.s_confirm("Are you sure want to logout?");
             if (con) {
@@ -513,6 +569,52 @@ export default {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 400px;
     position: relative;
+}
+
+/* Header / Navbar styling improvements */
+.site-navbar {
+    background: linear-gradient(135deg, #5563d6 0%, #6f4bb3 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.site-navbar .brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    color: #ffd970;
+    font-size: 16px;
+}
+.site-navbar .brand-text {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.05rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+.nav-btn {
+    border-radius: 22px;
+    padding: 8px 14px;
+    font-weight: 600;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    border-width: 1px;
+}
+.nav-btn:hover {
+    transform: translateY(-2px);
+}
+.register-btn {
+    color: #5563d6;
+}
+.user-welcome {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+    .site-navbar .brand-text { font-size: 0.95rem; }
+    .nav-btn { padding: 6px 10px; }
+    .user-welcome { display: none; }
 }
 
 .hero::before {
