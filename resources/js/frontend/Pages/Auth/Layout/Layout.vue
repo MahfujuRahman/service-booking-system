@@ -1,4 +1,4 @@
-<template>
+        <template>
 
     <div id="authentication">
         <div class="container">

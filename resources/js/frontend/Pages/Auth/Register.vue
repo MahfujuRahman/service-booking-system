@@ -102,11 +102,15 @@
 </template>
 <script>
 import Layout from "./Layout/Layout.vue";
+import { Link } from "@inertiajs/vue3";
 export default {
-  components: { Layout },
-
+  components: { Layout, Link },
   data() {
     return {
+      name: "",
+      phone_number: "",
+      email: "",
+      password: "",
       showPassword: false,
       loading: false,
     };
@@ -122,8 +126,13 @@ export default {
         if (response.data?.status === "success") {
           let data = response.data?.data;
           if (data.access_token) {
-            localStorage.setItem("user_token", data.access_token);
-            window.location.href = "/";
+            window.s_alert("Register Successfully");
+            localStorage.setItem("admin_token", data.access_token);
+            if (data.user) {
+              window.location.href = "super-admin#/message/conversation";
+            } else {
+              window.location.href = "login";
+            }
           }
         }
       } catch (error) {
