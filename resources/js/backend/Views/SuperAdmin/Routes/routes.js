@@ -6,7 +6,9 @@ import Dashboard from "../Management/Dashboard/Dashboard.vue";
 import SettingsRoutes from "../Management/Settings/setup/routes.js";
 //UserRoutes
 import UserRoutes from "../Management/UserManagement/User/setup/routes.js";
-//routes
+//routesimport BookingRoutes from '../../../GlobalManagement/Booking/setup/routes.js';
+import ServiceRoutes from '../../../GlobalManagement/Service/setup/routes.js';
+
 
 const routes = {
   path: "",
@@ -17,7 +19,9 @@ const routes = {
       component: Dashboard,
       name: "adminDashboard",
     },
-    //management routes
+    //management routes        BookingRoutes,
+        ServiceRoutes,
+
 
       
 

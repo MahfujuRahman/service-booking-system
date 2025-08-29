@@ -38,6 +38,8 @@
 
 
       
+<side-bar-single-menu :icon="`fa fa-plus`" :menu_title="`Service`"  :route_name="`AllService`" />
+<side-bar-single-menu :icon="`fa fa-plus`" :menu_title="`Booking`"  :route_name="`AllBooking`" />
 <!-- Management end -->
     </ul>
   </div>

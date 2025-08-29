@@ -8,7 +8,16 @@ php artisan make:table UserManagement/User/UserAddress [user_id:bigint,phone_num
 php artisan make:table  UserManagement/User/UserSocialLink [user_id:bigint,media_name:string-100,link:string-100] --model
 php artisan make:table UserManagement/User/UserLog [user_id:bigint,last_seen:string-255,log_details:json] --model
 
+php artisan make:module Service [name:string-255,description:text,price:float] --vue
 
 
-● Service (id, name, description, price, status)
+php artisan make:module GalleryManagement/GalleryCategory [title:string-255,description:text] --vue
+
+
 ● Booking (id, user_id, service_id, booking_date, status)
+
+php artisan make:module SeminerManagement/SeminerSubscribers [seminar_id:bigint{SeminerManagement/Seminer},email:string-255] --vue
+
+
+php artisan make:module Booking [user_id:bigint{UserManagement/User},service_id:bigint,booking_date:date] --vue
+php artisan make:module Booking [user_id:bigint,service_id:bigint,booking_date:date] --vue

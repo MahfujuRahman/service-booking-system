@@ -34,3 +34,5 @@ include_once base_path("app/Modules/Management/UserManagement/Role/Routes/Route.
 | Others Management Module
 |--------------------------------------------------------------------------
 */
+include_once base_path("app/Modules/Management/Service/Routes/Route.php");
+include_once base_path("app/Modules/Management/Booking/Routes/Route.php");
