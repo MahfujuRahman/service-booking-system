@@ -52,8 +52,8 @@
                     our comprehensive service catalog — booking requires a quick sign-in.</p>
             </div>
             <div class="col-md-12 text-center">
-                <div  v-if="!isAuthenticated" class="text-center">
-                    <h5 class="mb-2">Welcome back, {{ currentUser?.name || 'User' }}!</h5>
+                <div  v-if="isAuthenticated" class="text-center">
+                    <h5 class="mb-2">Welcome back, {{ currentUser?.first_name || 'User' }}!</h5>
                     <p class="mb-0">Browse and book services below</p>
                 </div>
             </div>
@@ -204,7 +204,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" @click="confirmBooking" :disabled="!bookingDate || bookingLoading">
                     <span v-if="bookingLoading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
                     {{ bookingLoading ? 'Booking...' : 'Confirm Booking' }}

@@ -16,6 +16,7 @@ class Register
             $requestData = $request->validated();
             $requestData['password'] = Hash::make($request->password);
             unset($requestData['confirmed']);
+            $requestData['role_id'] = 2;
             $user = self::$model::create($requestData);
             $data['access_token'] = $user->createToken('accessToken')->accessToken;
             $data['user'] = $user;
