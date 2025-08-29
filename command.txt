@@ -1,0 +1,14 @@
+
+/*
+|--------------------------------------------------------------------------
+| User Management
+|--------------------------------------------------------------------------
+*/    
+php artisan make:table UserManagement/User/UserAddress [user_id:bigint,phone_number:json,address:text,country:string-255,city:string-255,state:string-255,post:string-255] --model
+php artisan make:table  UserManagement/User/UserSocialLink [user_id:bigint,media_name:string-100,link:string-100] --model
+php artisan make:table UserManagement/User/UserLog [user_id:bigint,last_seen:string-255,log_details:json] --model
+
+
+
+● Service (id, name, description, price, status)
+● Booking (id, user_id, service_id, booking_date, status)
