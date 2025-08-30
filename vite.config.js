@@ -10,7 +10,6 @@ export default defineConfig({
                 "resources/sass/app.scss",
                 "resources/js/frontend/app.js",
                 "resources/js/backend/Views/SuperAdmin/app.js",
-                "resources/js/backend/Views/Admin/app.js",
             ],
             refresh: true,
         }),
