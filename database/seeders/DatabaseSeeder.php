@@ -13,11 +13,8 @@ use Illuminate\Database\Seeder;
 use App\Modules\Management\UserManagement\Role\Seeder\Seeder as RoleSeeder;
 use App\Modules\Management\UserManagement\User\Seeder\Seeder as UserSeeder;
 use App\Modules\Management\SettingManagement\WebsiteSettings\Seeder\Seeder as WebsiteSettingsSeeder;
-
-/**
- * Suppliyer seeder management.
- */
-use App\Modules\Management\BlogCategory\Seeder\Seeder as BlogCategorySeeder;
+use App\Modules\Management\Booking\Seeder\Seeder as BookingSeeder;
+use App\Modules\Management\Service\Seeder\Seeder as ServiceSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,16 +24,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            /**
-             * User seeder management.
-             */
+      
             RoleSeeder::class,
             UserSeeder::class,
             WebsiteSettingsSeeder::class,
-            /**
-             * Suppliyer seeder management.
-             */
-   
+            BookingSeeder::class,
+            ServiceSeeder::class,
 
         ]);
     }

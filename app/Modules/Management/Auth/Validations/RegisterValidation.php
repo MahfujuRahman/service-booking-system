@@ -42,11 +42,10 @@ class RegisterValidation extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'first_name' => 'required',
             'email' => 'required|sometimes|unique:users',
             'password' => ' sometimes|min:8',
             'confirmed' => 'sometimes|required|same:password',
-            'phone_number' => 'required|unique:users',
             'photo' => 'sometimes',
         ];
     }

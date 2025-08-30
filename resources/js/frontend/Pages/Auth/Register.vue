@@ -16,17 +16,6 @@
             <p class="alert-danger" id="name"></p>
           </div>
           <div class="form-group">
-            <label for="phone">Phone</label>
-            <input
-              class="form-control"
-              type="phone"
-              placeholder="  phone"
-              name="phone_number"
-              onchange="errorReset(event)"
-            />
-            <p class="alert-danger" id="phone"></p>
-          </div>
-          <div class="form-group">
             <label for="email">Email</label>
             <input
               class="form-control"
@@ -81,22 +70,7 @@
           >
         </form>
       </div>
-      <!-- <div class="col-md-6">
-                    <div id="userList">
-                        <table class="table table-dark table-striped table-hover  table-bordered">
-                            <thead class="sticky-top">
-                                <tr>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Password</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div> -->
+   
     </div>
   </Layout>
 </template>
